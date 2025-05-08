@@ -38,7 +38,9 @@ int	ft_printf(const char *str, ...)
 	va_list	args;
 	int		count;
 	int		i;
-
+	
+	if(!str)
+		return (-1);
 	va_start(args, str);
 	count = 0;
 	i = 0;
@@ -46,6 +48,8 @@ int	ft_printf(const char *str, ...)
 	{
 		if (str[i] == '%')
 		{
+			if (str[i+1] == 0)
+				break ;
 			count += print_format(args, str[i + 1]);
 			i += 2;
 		}
@@ -55,8 +59,7 @@ int	ft_printf(const char *str, ...)
 			i++;
 		}
 	}
-	va_end(args);
-	return (count);
+	return (va_end(args), count);
 }
 
 int	main(void)
@@ -64,21 +67,24 @@ int	main(void)
 
 	int i = 0;
 	int	j = 0;
-	char *c = "abc";
-	int out1 = ft_printf("str:%s", c);
-	printf("\n");
-	printf("%d\n ", out1);
+	char c = 'a';
+	// int out1 = ft_printf("str:%s", c);
+	// printf("\n");
+	// printf("%d\n ", out1);
 	printf("----------------\n");
 
 	unsigned int nb1 = -99;
 	char *str = "abcdefg";
 
-	printf("c: printf: %c \n", *str);
-	ft_printf("ft_printf: %c \n", *str);
+	printf("c: printf: %c \n", c);
+	ft_printf("ft_printf: %c \n", c);
 	ft_printf("\n");
 
-	printf("s: printf: %s \n", str);
-	ft_printf("ft_printf: %s \n", str);
+	//printf("s: printf: %", str);
+	ft_printf("what is this ft_printf: %", str);
+
+	ft_printf("\n");
+	ft_printf("aaaaaaaaaaaaa\n");
 	ft_printf("\n");
 
 	printf("u: printf: %u \n", nb1);
@@ -106,8 +112,8 @@ int	main(void)
 	ft_printf("printf: %d, ft_printf: %d\n", i, j);
 	ft_printf("\n");
 
-	printf(": printf: %%%%sssS \n");
-	ft_printf("ft_printf: %%%%sssS \n");
+	//printf(": printf: %asssS \n");
+	ft_printf("ft_printf: %assS \n");
 	ft_printf("\n");
 
 	printf("s: printf: %s \n", ((char*)0));
