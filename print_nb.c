@@ -15,13 +15,20 @@
 int	print_uint(uintptr_t nb, char *digits, uintptr_t base)
 {
 	int	count;
+	int	temp;
 
 	count = 0;
 	if (nb >= base)
 	{
-		count += print_uint(nb / base, digits, base);
+		temp = print_uint(nb / base, digits, base);
+		if (temp == -1)
+			return (-1);
+		else
+			count += temp;
 	}
-	count += print_char(digits[nb % base]);
+	if (print_char(digits[nb % base]) == -1)
+		return (-1);
+	count++;
 	return (count);
 }
 
@@ -32,9 +39,13 @@ int	print_int(intptr_t nb, char *digits, intptr_t base)
 	count = 0;
 	if (nb < 0)
 	{
-		print_char('-');
-		nb = -nb;
-		count++;
+		if (print_char('-') == -1)
+			return (-1);
+		else
+		{
+			nb = -nb;
+			count++;
+		}
 	}
 	count += print_uint(nb, digits, base);
 	return (count);
@@ -42,14 +53,14 @@ int	print_int(intptr_t nb, char *digits, intptr_t base)
 
 int	print_pointer(uintptr_t nb, char *digits, uintptr_t base)
 {
-	int count;
+	int	count;
+
 	count = 0;
 	if (nb == 0)
 	{
 		count = print_str("(nil)");
-		return count;
+		return (count);
 	}
-	
 	count += print_str("0x");
 	count += print_uint(nb, digits, base);
 	return (count);

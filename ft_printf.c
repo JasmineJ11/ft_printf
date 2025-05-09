@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libftprintf.c                                        :+:      :+:    :+:   */
+/*   libftprintf.c                                        :+:      :+:    :+: */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jiawli <jiawli@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -30,6 +30,8 @@ int	print_format(va_list args, char c)
 		return (print_uint(va_arg(args, unsigned int), "0123456789ABCDEF", 16));
 	if (c == '%')
 		return (print_char('%'));
+	if (c == '\0')
+		return (0);
 	return (0);
 }
 
@@ -38,8 +40,8 @@ int	ft_printf(const char *str, ...)
 	va_list	args;
 	int		count;
 	int		i;
-	
-	if(!str)
+
+	if (!str)
 		return (-1);
 	va_start(args, str);
 	count = 0;
@@ -48,74 +50,15 @@ int	ft_printf(const char *str, ...)
 	{
 		if (str[i] == '%')
 		{
-			if (str[i+1] == 0)
+			if (str[i + 1] == '\0')
 				break ;
 			count += print_format(args, str[i + 1]);
 			i += 2;
+			continue ;
 		}
-		else
-		{
-			count += print_char(str[i]);
-			i++;
-		}
+		if (print_char(str[i++]) == -1)
+			return (va_end(args), -1);
+		count++;
 	}
 	return (va_end(args), count);
-}
-
-int	main(void)
-{
-
-	int i = 0;
-	int	j = 0;
-	char c = 'a';
-	// int out1 = ft_printf("str:%s", c);
-	// printf("\n");
-	// printf("%d\n ", out1);
-	printf("----------------\n");
-
-	unsigned int nb1 = -99;
-	char *str = "abcdefg";
-
-	printf("c: printf: %c \n", c);
-	ft_printf("ft_printf: %c \n", c);
-	ft_printf("\n");
-
-	//printf("s: printf: %", str);
-	ft_printf("what is this ft_printf: %", str);
-
-	ft_printf("\n");
-	ft_printf("aaaaaaaaaaaaa\n");
-	ft_printf("\n");
-
-	printf("u: printf: %u \n", nb1);
-	ft_printf("ft_printf: %u \n", nb1);
-	ft_printf("\n");
-
-	printf("d: printf: %d \n", nb1);
-	ft_printf("ft_printf: %d \n", nb1);
-	ft_printf("\n");
-
-	printf("i: printf: %i \n", nb1);
-	ft_printf("ft_printf: %i \n", nb1);
-	ft_printf("\n");
-
-	printf("p: printf: %p \n", (void*)0);
-	ft_printf("ft_printf: %p \n", (void*)0);
-	ft_printf("\n");
-
-	printf("X: printf: %X \n", nb1);
-	ft_printf("ft_printf: %X \n", nb1);
-	ft_printf("\n");
-
-	i = printf("x: printf: %x \n", nb1);
-	j = ft_printf("ft_printf: %x \n", nb1);
-	ft_printf("printf: %d, ft_printf: %d\n", i, j);
-	ft_printf("\n");
-
-	//printf(": printf: %asssS \n");
-	ft_printf("ft_printf: %assS \n");
-	ft_printf("\n");
-
-	printf("s: printf: %s \n", ((char*)0));
-	ft_printf("ft_printf: %s \n", ((char*)0));
 }
