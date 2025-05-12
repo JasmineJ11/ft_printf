@@ -17,19 +17,46 @@ int	ft_strlen(char *str)
 	int	i;
 
 	i = 0;
-	while (str[i] != 0)
+	if (!str)
+		return (0);
+	while (str[i] != '\0')
 		i++;
 	return (i);
 }
 
-int	print_str(char *str)
+void	print_str(char *str, int *count)
 {
+	int	res;
+
+	if (*count < 0)
+		return ;
 	if (!str)
-		return (write(1, "(null)", 6));
-	return (write(1, str, ft_strlen(str)));
+	{
+		res = write(1, "(null)", 6);
+		if (res == -1)
+			*count = -1;
+		else
+			*count += res;
+	}
+	else
+	{
+		res = write(1, str, ft_strlen(str));
+		if (res == -1)
+			*count = -1;
+		else
+			*count += res;
+	}
 }
 
-int	print_char(char c)
+void	print_char(char c, int *count)
 {
-	return (write(1, &c, 1));
+	int	res;
+
+	if (*count < 0)
+		return ;
+	res = write(1, &c, 1);
+	if (res < 1)
+		*count = -1;
+	else
+		*count += res;
 }

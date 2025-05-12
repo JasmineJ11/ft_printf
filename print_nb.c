@@ -12,56 +12,60 @@
 
 #include "ft_printf.h"
 
-int	print_uint(uintptr_t nb, char *digits, uintptr_t base)
+void	print_uint(uintptr_t nb, char *digits, uintptr_t base, int *count)
 {
-	int	count;
-	int	temp;
-
-	count = 0;
+	if (*count < 0)
+		return ;
 	if (nb >= base)
 	{
-		temp = print_uint(nb / base, digits, base);
-		if (temp == -1)
-			return (-1);
-		else
-			count += temp;
+		print_uint(nb / base, digits, base, count);
+		if (*count < 0)
+			return ;
 	}
-	if (print_char(digits[nb % base]) == -1)
-		return (-1);
-	count++;
-	return (count);
+	print_char(digits[nb % base], count);
+	if (*count < 0)
+		return ;
 }
 
-int	print_int(intptr_t nb, char *digits, intptr_t base)
+void	print_int(intptr_t nb, char *digits, intptr_t base, int *count)
 {
-	int	count;
-
-	count = 0;
+	if (*count < 0)
+		return ;
 	if (nb < 0)
 	{
-		if (print_char('-') == -1)
-			return (-1);
-		else
-		{
-			nb = -nb;
-			count++;
-		}
+		print_char('-', count);
+		if (*count < 0)
+			return ;
+		nb = -nb;
 	}
-	count += print_uint(nb, digits, base);
-	return (count);
+	print_uint((uintptr_t)nb, digits, base, count);
+	if (*count < 0)
+		return ;
 }
 
-int	print_pointer(uintptr_t nb, char *digits, uintptr_t base)
+void	print_pointer(uintptr_t nb, char *digits, uintptr_t base, int *count)
 {
-	int	count;
+	int	res;
 
-	count = 0;
+	if (*count < 0)
+		return ;
 	if (nb == 0)
 	{
-		count = print_str("(nil)");
-		return (count);
+		res = write(1, "(nil)", 5);
+		if (res == -1)
+			*count = -1;
+		else
+			(*count) += res;
+		return ;
 	}
-	count += print_str("0x");
-	count += print_uint(nb, digits, base);
-	return (count);
+	res = write(1, "0x", 2);
+	if (res == -1)
+	{
+		*count = -1;
+		return ;
+	}
+	(*count) += res;
+	if (*count < 0)
+		return ;
+	print_uint(nb, digits, base, count);
 }

@@ -12,27 +12,26 @@
 
 #include "ft_printf.h"
 
-int	print_format(va_list args, char c)
+void	print_format(va_list args, char c, int *count)
 {
+	if (*count < 0)
+		return ;
 	if (c == 'c')
-		return (print_char(va_arg(args, int)));
+		print_char(va_arg(args, int), count);
 	if (c == 's')
-		return (print_str(va_arg(args, char *)));
+		print_str(va_arg(args, char *), count);
 	if (c == 'u')
-		return (print_uint(va_arg(args, unsigned int), "0123456789", 10));
+		print_uint(va_arg(args, unsigned int), "0123456789", 10, count);
 	if (c == 'i' || c == 'd')
-		return (print_int(va_arg(args, int), "0123456789", 10));
+		print_int(va_arg(args, int), "0123456789", 10, count);
 	if (c == 'p')
-		return (print_pointer(va_arg(args, uintptr_t), "0123456789abcdef", 16));
+		print_pointer(va_arg(args, uintptr_t), "0123456789abcdef", 16, count);
 	if (c == 'x')
-		return (print_uint(va_arg(args, unsigned int), "0123456789abcdef", 16));
+		print_uint(va_arg(args, unsigned int), "0123456789abcdef", 16, count);
 	if (c == 'X')
-		return (print_uint(va_arg(args, unsigned int), "0123456789ABCDEF", 16));
+		print_uint(va_arg(args, unsigned int), "0123456789ABCDEF", 16, count);
 	if (c == '%')
-		return (print_char('%'));
-	if (c == '\0')
-		return (0);
-	return (0);
+		print_char('%', count);
 }
 
 int	ft_printf(const char *str, ...)
@@ -46,19 +45,20 @@ int	ft_printf(const char *str, ...)
 	va_start(args, str);
 	count = 0;
 	i = 0;
-	while (str[i] != '\0')
+	while (str[i] != '\0' && count >= 0)
 	{
 		if (str[i] == '%')
 		{
 			if (str[i + 1] == '\0')
 				break ;
-			count += print_format(args, str[i + 1]);
+			print_format(args, str[i + 1], &count);
 			i += 2;
-			continue ;
 		}
-		if (print_char(str[i++]) == -1)
-			return (va_end(args), -1);
-		count++;
+		else
+		{
+			print_char(str[i], &count);
+			i += 1;
+		}
 	}
 	return (va_end(args), count);
 }
