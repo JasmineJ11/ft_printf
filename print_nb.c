@@ -14,8 +14,6 @@
 
 void	print_uint(uintptr_t nb, char *digits, uintptr_t base, int *count)
 {
-	if (*count < 0)
-		return ;
 	if (nb >= base)
 	{
 		print_uint(nb / base, digits, base, count);
@@ -23,14 +21,10 @@ void	print_uint(uintptr_t nb, char *digits, uintptr_t base, int *count)
 			return ;
 	}
 	print_char(digits[nb % base], count);
-	if (*count < 0)
-		return ;
 }
 
 void	print_int(intptr_t nb, char *digits, intptr_t base, int *count)
 {
-	if (*count < 0)
-		return ;
 	if (nb < 0)
 	{
 		print_char('-', count);
@@ -39,16 +33,12 @@ void	print_int(intptr_t nb, char *digits, intptr_t base, int *count)
 		nb = -nb;
 	}
 	print_uint((uintptr_t)nb, digits, base, count);
-	if (*count < 0)
-		return ;
 }
 
 void	print_pointer(uintptr_t nb, char *digits, uintptr_t base, int *count)
 {
 	int	res;
 
-	if (*count < 0)
-		return ;
 	if (nb == 0)
 	{
 		res = write(1, "(nil)", 5);
